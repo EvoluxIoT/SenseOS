@@ -1,0 +1,29 @@
+name: Artifacts - SenseOS for SynapsePod (Main)
+on:
+    push:
+      branches: [main]
+    pull_request:
+      branches: [main]
+    workflow_dispatch:
+jobs:
+    build-artifact:
+        runs-on: ubuntu-latest
+        name: Build and Publish Artifact
+        steps:
+            - name: Check out this repository
+              uses: actions/checkout@v3
+                
+            - name: Build SenseOS Binaries for SynapsePod
+              run: docker build -t senseos-synapsepod-build .
+                
+            - name: Prepare SenseOS Binaries to be copied to Artifacts
+              run: docker create --name synapsepod-build senseos-synapsepod-build
+            
+            - name: Copy out all SenseOS Binaries
+              run: docker cp synapsepod-build:/senseos/. senseos
+
+            - uses: actions/upload-artifact@v3
+              with:
+                name: SenseOS for SynapsePod (main)
+                path: senseos
+              
