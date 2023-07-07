@@ -171,7 +171,10 @@ class SenseWifiSetupScreen(SenseDisplayioScreen):
         keypad.read()
 
         if keypad.pressed_key_2:
-            self.wifi_selector.selected_index -= 1
+            if self.wifi_selector.selected_index == 0:
+                self.wifi_selector.selected_index = len(self.wifi_selector.items) - 1
+            else:
+                self.wifi_selector.selected_index -= 1
 
         elif keypad.pressed_key_5:
             self.scan_networks(True)
@@ -183,7 +186,10 @@ class SenseWifiSetupScreen(SenseDisplayioScreen):
                 self.scan_networks()
 
         elif keypad.pressed_key_10:
-            self.wifi_selector.selected_index += 1
+            if self.wifi_selector.selected_index == len(self.wifi_selector.items) - 1:
+                self.wifi_selector.selected_index = 0
+            else:
+                self.wifi_selector.selected_index += 1
 
 
 

@@ -114,7 +114,7 @@ class SenseOS:
     # ---------------------------------------------------------------
 
     def __init__(self):
-        self.__acpi = SenseACPISubsystem()
+        self.__acpi = SenseACPISubsystem(self)
         self.__memory = SenseMemorySubsystem()
         self.__hardware = SenseHardwareSubsystem(self)
         self.__display = SenseDisplaySubsystem(self)

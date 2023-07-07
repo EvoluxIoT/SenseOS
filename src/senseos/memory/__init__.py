@@ -133,6 +133,6 @@ class SenseMemorySubsystem:
         :return: True if reclaimed memory, False otherwise
         """
         if GARBAGE_COLLECTOR_AVAILABLE:
-            return gc.collect() > 0
+            return gc.collect() != 0
         else:
             return False

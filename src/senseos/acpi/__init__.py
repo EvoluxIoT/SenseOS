@@ -95,3 +95,6 @@ class SenseACPISubsystem:
             microcontroller.reset()
         else:
             pass
+    
+    def __init__(self, senseos) -> None:
+        self.__senseos = senseos

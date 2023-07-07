@@ -49,7 +49,6 @@ class SenseMainScreen(SenseDisplayioScreen):
     branding: SenseGuiElementLabel = None
     progress: SenseGuiElementHorizontalProgressBar = None
 
-    perform_reconnect = True
 
     @property
     def synapselink(self) -> SenseSynapseLinkSubsystem:
@@ -115,36 +114,36 @@ class SenseMainScreen(SenseDisplayioScreen):
 
     def display(self, value):
         self.remote_text.text = f"{value}"
+
     def tick(self, *args, **kwargs):
         """
         Performs a tick on the screen, updating the state of the screen
         """
-        self.network_state.fill = RED if not wifi.radio.connected else GREEN
-        self.network_state.outline = RED if not wifi.radio.connected else GREEN
-        self.mqtt_state.fill = RED if self.perform_reconnect or not wifi.radio.connected else GREEN
-        self.mqtt_state.outline = RED if self.perform_reconnect or not wifi.radio.connected else GREEN
+        
+        self.network_state.fill = RED if not self.synapselink.network_connected else GREEN
+        self.network_state.outline = RED if not self.synapselink.network_connected else GREEN
+        self.mqtt_state.fill = RED if not self.synapselink.connected else GREEN
+        self.mqtt_state.outline = RED if not self.synapselink.connected else GREEN
+
         self.uptime.text = f"Uptime: {int(monotonic())} seconds"
 
-        if self.perform_reconnect or not self.synapselink.connected:
+        if not self.synapselink.connected:
             self.mqtt_state.fill = YELLOW
             self.branding.text = f"EvoluxIoT: Connecting..."
             self.synapselink.deinitialize()
             
             self.synapselink.initialize()
             if self.synapselink.connect():
-                self.perform_reconnect = False
                 self.branding.text = f"EvoluxIoT: Ready"
             else:
                 self.branding.text = f"EvoluxIoT: Offline"
                 time.sleep(2)
 
         elif not self.synapselink.poll():
-            self.mqtt_state.fill = RED
-            self.mqtt_state.outline = RED
-            self.network_state.fill = RED
-            self.network_state.outline = RED
             self.branding.text = f"EvoluxIoT: Offline"
-            self.perform_reconnect = True
+
+
+
 
 
 
